@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/banner.svg" alt="Gepetto-Browser banner" width="900"/>
+</p>
+
 # Gepetto-Browser
 captcha + cf solving, human replicating, http proxy-able, puppeteer fork inspired by puppeteer-real-browser
 

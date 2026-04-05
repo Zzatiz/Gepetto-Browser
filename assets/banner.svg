@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" width="900" height="220">
+  <defs>
+    <!-- Deep dark background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d1a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
+    </linearGradient>
+    <!-- Accent glow for browser frame -->
+    <linearGradient id="frameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+    <!-- Shield/CAPTCHA accent gradient -->
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#34d399;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    <!-- Text title gradient -->
+    <linearGradient id="titleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c7d2fe;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#a5b4fc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+    </linearGradient>
+    <!-- Glow filter -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <!-- Soft ambient glow behind icon -->
+    <radialGradient id="ambientGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="220" rx="14" ry="14" fill="url(#bg)" />
+
+  <!-- Subtle grid lines -->
+  <line x1="0" y1="55" x2="900" y2="55" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+  <line x1="0" y1="110" x2="900" y2="110" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+  <line x1="0" y1="165" x2="900" y2="165" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+  <line x1="225" y1="0" x2="225" y2="220" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+  <line x1="450" y1="0" x2="450" y2="220" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+  <line x1="675" y1="0" x2="675" y2="220" stroke="#1f2937" stroke-width="1" opacity="0.5"/>
+
+  <!-- Left accent bar -->
+  <rect x="0" y="0" width="5" height="220" rx="3" fill="url(#frameGrad)" />
+
+  <!-- Ambient glow behind browser icon -->
+  <ellipse cx="95" cy="110" rx="70" ry="70" fill="url(#ambientGlow)" />
+
+  <!-- Browser window icon -->
+  <!-- Outer frame -->
+  <rect x="35" y="55" width="120" height="90" rx="8" ry="8" fill="none" stroke="url(#frameGrad)" stroke-width="2.5" />
+  <!-- Title bar fill -->
+  <rect x="35" y="55" width="120" height="22" rx="8" ry="8" fill="url(#frameGrad)" opacity="0.85" />
+  <rect x="35" y="66" width="120" height="11" fill="url(#frameGrad)" opacity="0.85" />
+  <!-- Window dots -->
+  <circle cx="50" cy="66" r="3.5" fill="#ff5f57" />
+  <circle cx="62" cy="66" r="3.5" fill="#febc2e" />
+  <circle cx="74" cy="66" r="3.5" fill="#28c840" />
+  <!-- URL bar inside window -->
+  <rect x="45" y="85" width="100" height="12" rx="3" fill="#1f2937" stroke="#374151" stroke-width="1" />
+  <text x="95" y="95" text-anchor="middle" font-family="monospace" font-size="7" fill="#6b7280">gepetto-browser</text>
+  <!-- Content lines inside browser -->
+  <rect x="45" y="103" width="70" height="5" rx="2" fill="#374151" opacity="0.7" />
+  <rect x="45" y="113" width="55" height="5" rx="2" fill="#374151" opacity="0.5" />
+  <rect x="45" y="123" width="80" height="5" rx="2" fill="#374151" opacity="0.4" />
+  <!-- Shield badge (CAPTCHA solved indicator) -->
+  <g filter="url(#glow)">
+    <path d="M128 105 L140 108 L140 118 Q140 126 134 129 L128 132 L122 129 Q116 126 116 118 L116 108 Z"
+          fill="url(#shieldGrad)" opacity="0.95"/>
+    <text x="128" y="122" text-anchor="middle" font-family="sans-serif" font-size="9" fill="white" font-weight="bold">✓</text>
+  </g>
+
+  <!-- Title -->
+  <text x="185" y="95" font-family="'Segoe UI', system-ui, sans-serif" font-size="38" font-weight="700"
+        fill="url(#titleGrad)" filter="url(#glow)" letter-spacing="-1">
+    Gepetto-Browser
+  </text>
+
+  <!-- Subtitle / tagline -->
+  <text x="185" y="122" font-family="'Segoe UI', system-ui, sans-serif" font-size="14"
+        fill="#9ca3af" letter-spacing="0.5">
+    Puppeteer fork · CAPTCHA solving · Human-like automation · Proxy rotation
+  </text>
+
+  <!-- Pill badges -->
+  <!-- Puppeteer badge -->
+  <rect x="185" y="140" width="100" height="24" rx="12" fill="#1e1b4b" stroke="#4338ca" stroke-width="1"/>
+  <text x="235" y="157" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" fill="#a5b4fc" font-weight="600">Puppeteer</text>
+
+  <!-- CAPTCHA badge -->
+  <rect x="295" y="140" width="95" height="24" rx="12" fill="#052e16" stroke="#059669" stroke-width="1"/>
+  <text x="342" y="157" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" fill="#34d399" font-weight="600">2Captcha</text>
+
+  <!-- Proxy badge -->
+  <rect x="400" y="140" width="90" height="24" rx="12" fill="#1c1917" stroke="#78716c" stroke-width="1"/>
+  <text x="445" y="157" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" fill="#d6d3d1" font-weight="600">Proxy Rotation</text>
+
+  <!-- Stealth badge -->
+  <rect x="500" y="140" width="95" height="24" rx="12" fill="#1a0533" stroke="#7c3aed" stroke-width="1"/>
+  <text x="547" y="157" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" fill="#c4b5fd" font-weight="600">Fingerprint</text>
+
+  <!-- Cloudflare badge -->
+  <rect x="605" y="140" width="110" height="24" rx="12" fill="#1c1407" stroke="#d97706" stroke-width="1"/>
+  <text x="660" y="157" text-anchor="middle" font-family="'Segoe UI', system-ui, sans-serif"
+        font-size="11" fill="#fbbf24" font-weight="600">CF Turnstile</text>
+
+  <!-- npm install hint -->
+  <rect x="185" y="180" width="245" height="26" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1"/>
+  <text x="200" y="198" font-family="monospace" font-size="12" fill="#7ee787">$</text>
+  <text x="213" y="198" font-family="monospace" font-size="12" fill="#e6edf3"> npm install gepetto-browser</text>
+
+  <!-- Right decorative circuit lines -->
+  <g opacity="0.15" stroke="#818cf8" stroke-width="1" fill="none">
+    <polyline points="820,30 820,80 860,80" />
+    <polyline points="860,80 860,140 820,140" />
+    <polyline points="820,140 820,190 860,190" />
+    <circle cx="820" cy="30" r="3" fill="#818cf8" opacity="0.6" />
+    <circle cx="860" cy="80" r="3" fill="#818cf8" opacity="0.6" />
+    <circle cx="820" cy="140" r="3" fill="#818cf8" opacity="0.6" />
+    <circle cx="860" cy="190" r="3" fill="#818cf8" opacity="0.6" />
+    <polyline points="840,55 880,55 880,110 840,110" />
+    <circle cx="880" cy="110" r="2" fill="#818cf8" opacity="0.5" />
+  </g>
+</svg>
