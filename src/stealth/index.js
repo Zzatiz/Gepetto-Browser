@@ -89,7 +89,11 @@ async function applyStealth(page, browser, options = {}) {
 function stealthLaunchFlags() {
   return [
     '--disable-blink-features=AutomationControlled',
-    '--force-webrtc-ip-handling-policy=default_public_interface_only',
+    // disable_non_proxied_udp forces WebRTC through the proxy; with an HTTP proxy
+    // (no UDP) no candidates are gathered, so the real IP cannot leak. NOTE:
+    // default_public_interface_only is WRONG here — it still exposes the public IP.
+    '--force-webrtc-ip-handling-policy=disable_non_proxied_udp',
+    '--enforce-webrtc-ip-permission-check',
   ];
 }
 

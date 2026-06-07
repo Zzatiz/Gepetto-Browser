@@ -188,16 +188,6 @@ async function init(options = {}) {
   // Merge default launch arguments.
   let finalArgs = mergeArgs(args, configFlags, screenSize, ignoreAllFlags);
 
-  // When fingerprinting is enabled, add browser-level stealth flags (WebRTC
-  // leak policy etc.) that aren't already in the default set.
-  if (fingerprint) {
-    for (const flag of stealthLaunchFlags()) {
-      if (!finalArgs.some(a => a.split('=')[0] === flag.split('=')[0])) {
-        finalArgs.push(flag);
-      }
-    }
-  }
-
   // If captcha is enabled, prompt for 2Captcha API key and update the extension config.
   if (captcha) {
     const apiKey = await promptApiKey();
@@ -216,6 +206,17 @@ async function init(options = {}) {
       ? proxies.map(normalizeProxy).filter(Boolean)
       : loadProxies(path.join(process.cwd(), 'proxies.txt'));
     finalProxy = selectProxy(list, proxyRotation);
+  }
+
+  // Add browser-level stealth flags (WebRTC leak policy + AutomationControlled)
+  // when fingerprinting OR when a proxy is in use — a proxy is pointless if
+  // WebRTC leaks the real IP around it.
+  if (fingerprint || finalProxy) {
+    for (const flag of stealthLaunchFlags()) {
+      if (!finalArgs.some(a => a.split('=')[0] === flag.split('=')[0])) {
+        finalArgs.push(flag);
+      }
+    }
   }
 
   // Prepare options for connect().

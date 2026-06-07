@@ -194,8 +194,13 @@ function applyEvasions(profile) {
   try {
     const OrigPC = window.RTCPeerConnection || window.webkitRTCPeerConnection;
     if (OrigPC) {
-      const isPrivate = function (c) {
-        return /(\b10\.|\b127\.|\b192\.168\.|\b172\.(1[6-9]|2\d|3[01])\.|\.local\b)/i.test(c || '');
+      // Drop candidates that can reveal the real IP: 'host' (local) and 'srflx'
+      // (public address discovered via STUN) — the srflx leak is what bypasses a
+      // proxy. Also drop any private/.local address. Relay (TURN) is kept.
+      const isLeaky = function (c) {
+        if (!c) return false;
+        if (/ typ (host|srflx)/i.test(c)) return true;
+        return /(\b10\.|\b127\.|\b192\.168\.|\b172\.(1[6-9]|2\d|3[01])\.|\.local\b)/i.test(c);
       };
       const Wrapped = function RTCPeerConnection() {
         const pc = new (Function.prototype.bind.apply(OrigPC, [null].concat(Array.prototype.slice.call(arguments))))();
@@ -203,7 +208,7 @@ function applyEvasions(profile) {
         pc.addEventListener = makeNative(function addEventListener(type, listener, opts) {
           if (type === 'icecandidate' && typeof listener === 'function') {
             const filtered = function (event) {
-              if (event && event.candidate && isPrivate(event.candidate.candidate)) return;
+              if (event && event.candidate && isLeaky(event.candidate.candidate)) return;
               return listener.call(this, event);
             };
             return origAdd(type, filtered, opts);

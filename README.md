@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="Gepetto-Browser banner" width="900"/>
+  <img src="assets/gepetto-banner.jpg" alt="Gepetto-Browser banner" width="900"/>
 </p>
 
 # Gepetto-Browser
