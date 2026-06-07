@@ -121,6 +121,8 @@ await init({
 
 ## Proxies
 
+Provide your own proxies — none ship with the repo. Copy
+`proxies.example.txt` → `proxies.txt` (gitignored) or run `gepetto setup`.
 `proxies.txt` (one per line) accepts any of:
 
 ```

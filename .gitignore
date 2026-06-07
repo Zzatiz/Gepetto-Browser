@@ -6,3 +6,6 @@ node_modules/
 gepetto-screenshot.png
 SCRAPE.md
 .gepetto.json
+proxies.txt
+cookies.json
+*.session.json

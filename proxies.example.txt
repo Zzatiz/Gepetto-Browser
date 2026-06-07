@@ -1,0 +1,10 @@
+# Copy this file to `proxies.txt` (gitignored) or run `gepetto setup`.
+# One proxy per line. Supported formats:
+#   http:host:port:user:pass
+#   https:host:port:user:pass
+#   socks5://user:pass@host:port
+#   host:port
+#
+# Example (not real — replace with your own):
+# http:1.2.3.4:8080:myuser:mypass
+# socks5://myuser:mypass@9.9.9.9:1080

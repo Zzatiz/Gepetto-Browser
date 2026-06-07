@@ -1,68 +1,54 @@
 #!/usr/bin/env node
+// setup.js — postinstall helper.
+//
+// On Debian/Ubuntu it tries to install the system libraries Chrome needs. It is
+// intentionally NON-FATAL: a failure here (no sudo, CI, container, non-Debian)
+// must never break `npm install`. It does NOT reinstall npm dependencies — npm
+// already installs everything declared in package.json.
+'use strict';
 
-// setup.js
 const { execSync } = require('child_process');
 const os = require('os');
 
-const isLinux = os.platform() === 'linux';
-const isDebianBased = () => {
+function isDebianBased() {
+  if (os.platform() !== 'linux') return false;
   try {
-    const result = execSync('cat /etc/os-release').toString();
+    const result = execSync('cat /etc/os-release').toString().toLowerCase();
     return result.includes('debian') || result.includes('ubuntu');
   } catch (err) {
     return false;
   }
-};
+}
 
-const npmDependencies = [
-  'axios',
-  'ghost-cursor',
-  'https-proxy-agent',
-  'puppeteer',
-  'tree-kill',
-  'xvfb'
+const CHROME_LIBS = [
+  'xvfb', 'libnss3', 'libx11-xcb1', 'libxcomposite1', 'libxcursor1', 'libxdamage1',
+  'libxi6', 'libxtst6', 'libxrandr2', 'libasound2', 'libpangocairo-1.0-0',
+  'libatk1.0-0', 'libatk-bridge2.0-0', 'libcups2', 'libdbus-1-3',
 ];
 
-/**
- * Install system dependencies on Linux
- */
-function installLinuxPackages() {
-  console.log('\n[Setup] Installing required Linux packages...');
+function tryInstallLinuxPackages() {
+  console.log('\n[Setup] Detected Debian-based Linux — attempting to install Chrome system libraries...');
   try {
     execSync('sudo apt-get update', { stdio: 'inherit' });
-    execSync('sudo apt-get install -y xvfb libnss3 libx11-xcb1 libxcomposite1 libxcursor1 libxdamage1 libxi6 libxtst6 libnss3 libxrandr2 libasound2 libpangocairo-1.0-0 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdbus-1-3', { stdio: 'inherit' });
-    console.log('[Setup] Linux packages installed successfully.');
+    execSync(`sudo apt-get install -y ${CHROME_LIBS.join(' ')}`, { stdio: 'inherit' });
+    console.log('[Setup] System libraries installed.');
   } catch (err) {
-    console.error('[Setup] Failed to install Linux packages:', err.message);
-    process.exit(1);
+    // Never fail the npm install — just guide the user.
+    console.warn('[Setup] Could not auto-install system libraries (this is fine).');
+    console.warn('[Setup] If Chrome fails to launch, install them manually:');
+    console.warn(`[Setup]   sudo apt-get install -y ${CHROME_LIBS.join(' ')}`);
   }
 }
 
-/**
- * Install npm dependencies
- */
-function installNpmDependencies() {
-  console.log('\n[Setup] Installing required npm packages...');
+(function main() {
   try {
-    npmDependencies.forEach(dep => {
-      console.log(`[Setup] Installing ${dep}...`);
-      execSync(`npm install ${dep}`, { stdio: 'inherit' });
-    });
-    console.log('[Setup] All npm packages installed successfully.');
+    if (isDebianBased()) {
+      tryInstallLinuxPackages();
+    } else if (os.platform() === 'linux') {
+      console.log('[Setup] Non-Debian Linux — install Chrome dependencies for Puppeteer manually if needed.');
+    }
   } catch (err) {
-    console.error('[Setup] Failed to install npm packages:', err.message);
-    process.exit(1);
+    // Swallow everything; postinstall must exit 0.
+    console.warn('[Setup] Skipped optional setup:', err.message);
   }
-}
-
-(async () => {
-  if (isLinux && isDebianBased()) {
-    console.log('[Setup] Detected Debian-based Linux system.');
-    installLinuxPackages();
-  } else if (isLinux) {
-    console.log('[Setup] Detected non-Debian Linux system.');
-    console.log('[Setup] Please manually install required dependencies for Puppeteer.');
-  }
-
-  installNpmDependencies();
 })();
