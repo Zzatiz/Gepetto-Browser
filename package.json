@@ -1,7 +1,7 @@
 {
   "name": "gepettobrowser",
-  "version": "1.1.0",
-  "description": "Stealth puppeteer fork: fingerprint spoofing, Cloudflare/Turnstile + 2Captcha solving, proxy rotation, resilient navigation, self-healing selectors.",
+  "version": "1.2.0",
+  "description": "Stealth puppeteer fork: fingerprint spoofing, Cloudflare/Turnstile + 2Captcha solving, proxy rotation, resilient navigation, self-healing selectors, and an optional Claude-powered AI agent plugin.",
   "main": "src/index.js",
   "bin": {
     "gepetto": "./bin/gepetto.js"
@@ -36,6 +36,7 @@
     "xvfb": "^0.4.0"
   },
   "optionalDependencies": {
+    "@anthropic-ai/sdk": "^0.102.0",
     "@modelcontextprotocol/sdk": "^1.0.0"
   }
 }

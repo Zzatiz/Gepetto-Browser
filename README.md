@@ -21,6 +21,21 @@ Stealth Puppeteer fork for serious scraping: coherent **fingerprint spoofing**, 
 - **Session persistence** — `userDataDir` + cookie save/restore.
 - **Human-like input** — `ghost-cursor` + simulated mouse movement before clicks/typing.
 - **CLI + MCP server + Agent Skill** — drive it from the shell or from AI tools.
+- **🧠 AI Agent (optional plugin)** — give it a goal in plain English; Claude reads a compact page digest, drives the browser (click/type/scroll/navigate), and returns **structured JSON**. Fully modular and metered for usage-based billing. See [AI Agent](#ai-agent-optional-plugin).
+
+## Proof
+
+Run headless, fingerprint on — verified against detection suites and a real site (more in [`assets/proof/`](assets/proof)):
+
+<p align="center">
+  <img src="assets/proof/sannysoft.png" alt="bot.sannysoft.com — all automation checks pass" width="300"/>
+  <img src="assets/proof/youtube-ai-result.png" alt="AI agent extracting structured data from YouTube" width="460"/>
+</p>
+
+- **bot.sannysoft.com:** 31 passed / 0 failed (headless **and** headed via Xvfb).
+- **WebRTC:** no real-IP leak through the proxy (`webrtcIPs: []`).
+- **WebGL:** real GPU (e.g. `AMD Radeon RX 6600`), never SwiftShader.
+- **YouTube (live):** the AI agent returned 5 videos with titles + channels as structured JSON in one model call (~8.5s end-to-end).
 
 ## Installation
 
@@ -153,6 +168,56 @@ const { mode, result } = await tieredFetch('https://api.example.com/data');
 
 Pass a TLS-impersonation client (e.g. `node-tls-client`) via `httpGet(url, { client })`
 for real JA3/TLS spoofing — it's optional and lazy-loaded.
+
+## AI Agent (optional plugin)
+
+Give the browser a brain. Describe what you want in plain English; Claude reads a
+**compact page digest** (title, headings, a bounded text slice, and interactive
+elements each tagged with a short `ref`), then drives the browser via tools
+(`click` / `type` / `scroll` / `navigate`) with natural mouse movement, and returns
+**structured JSON**. Built for low latency (Haiku 4.5, no thinking, small payloads,
+prompt caching) and **headless**.
+
+> **Fully modular.** The core scraper never imports this — requiring `gepetto-browser`
+> loads neither the AI code nor the SDK. It's a separate opt-in module so you can
+> ship it as a paid plugin.
+
+**Setup:** `npm install @anthropic-ai/sdk` (an `optionalDependency`) and set
+`ANTHROPIC_API_KEY` (or pass `apiKey`).
+
+```js
+const { aiScrape } = require('gepetto-browser/ai');
+
+const res = await aiScrape({
+  url: 'https://www.youtube.com/results?search_query=lofi+hip+hop',
+  prompt: 'Return the first 5 videos as {videos:[{title, channel}]}.',
+  model: 'claude-haiku-4-5',   // "fast" model; any Claude model works
+  markup: 2,                    // your upcharge multiplier for billing
+  schema: { type: 'object', properties: { videos: { type: 'array' } } }, // optional
+});
+
+res.data;   // { videos: [ { title: "Best of lofi hip hop 2021 ✨ ...", channel: "Lofi Girl" }, ... ] }
+res.usage;  // { inputTokens, outputTokens, cacheReadTokens, ..., totalTokens }
+res.cost;   // { baseUsd, billableUsd, markup }  ← meter this to charge per token
+res.steps;  // every action the agent took
+```
+
+Or drive an existing page directly:
+
+```js
+const { attachAI } = require('gepetto-browser/ai');
+const { browser, page } = await init({ headless: true, fingerprint: true });
+await page.gotoResilient('https://example.com');
+attachAI(page);
+const res = await page.ai('Find the contact email and return {email}.');
+```
+
+**Two-way control:** the agent sees button/link labels in the digest and clicks the
+matching `ref` to navigate — e.g. pass `"search for X then open the first result"`
+and it types into the search box, submits, and clicks through.
+
+**Token metering / upcharge:** every run returns `usage` (token counts) and `cost`
+(`baseUsd` + `billableUsd` after your `markup`), so you can bill per token.
 
 ## CLI
 
