@@ -222,10 +222,16 @@ and it types into the search box, submits, and clicks through.
 ## CLI
 
 ```sh
+gepetto setup                                        # configure proxies + Claude key (both optional)
 gepetto fetch  "https://example.com"                 # fast HTTP path -> text
 gepetto browse "https://protected.com" --screenshot out.png
 gepetto browse "https://x.com" --proxy "http://user:pass@host:port"
+gepetto ai     "https://site.com" "extract the pricing table as JSON"   # AI agent -> structured JSON
 ```
+
+`gepetto setup` interactively (and optionally) collects a proxy list → `proxies.txt`
+(auto-used) and a Claude API key → `.gepetto.json` (gitignored). `gepetto ai` reads
+the key from there (or `ANTHROPIC_API_KEY`) and needs `npm install @anthropic-ai/sdk`.
 
 ## MCP server (for AI tools)
 
