@@ -1,6 +1,9 @@
 // src/pageController.js
 const { createCursor } = require('ghost-cursor');
 const { checkTurnstile } = require('./turnstile');
+const { attachNavigation } = require('./navigation');
+const { attachSession } = require('./session');
+const { attachAdaptive } = require('./adaptive');
 const kill = require('tree-kill');
 
 /**
@@ -117,6 +120,13 @@ async function pageController({ browser, page, proxy, turnstile, xvfbSession, pl
       return originalType(selector, text, options);
     };
   }
+
+  // Attach resilient navigation (page.gotoResilient), session helpers
+  // (page.saveCookies / page.loadCookies), and self-healing selectors
+  // (page.findAdaptive).
+  attachNavigation(page);
+  attachSession(page);
+  attachAdaptive(page);
 
   return page;
 }

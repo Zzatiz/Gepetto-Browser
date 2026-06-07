@@ -15,7 +15,8 @@ async function connect(options) {
     ignoreAllFlags = false,
     fingerprint = false,
     autoLaunch = true,
-    executablePath = null  // <-- NEW OPTION
+    executablePath = null,
+    userDataDir = null
   } = options;
 
   let xvfbSession = null;
@@ -37,11 +38,13 @@ async function connect(options) {
     headless: headless,
     args: args.concat(
       proxy.host && proxy.port
-        ? [`--proxy-server=${proxy.type}://${proxy.host}:${proxy.port}`]
+        ? [`--proxy-server=${(proxy.type || 'http')}://${proxy.host}:${proxy.port}`]
         : []
     ),
-    executablePath  // <-- NEW OPTION FORWARDING
+    executablePath
   });
+  // Persist the browser profile (cookies, localStorage, cache) across runs.
+  if (userDataDir) launchOptions.userDataDir = userDataDir;
 
   let browser;
   if (autoLaunch) {
