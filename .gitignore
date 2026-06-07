@@ -9,3 +9,4 @@ SCRAPE.md
 proxies.txt
 cookies.json
 *.session.json
+local/
